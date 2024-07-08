@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include "bodyobject.h"
-#include "C:/Users/AlborzRayan/CLionProjects/super-mario1/Position.h"
+#include "Position.h"
 #include "platform.h"
 #include "decorator.h"
 #include <QGraphicsPixmapItem>
