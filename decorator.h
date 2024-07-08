@@ -10,7 +10,7 @@ class Decorator : public BodyObject {
 public:
     Decorator(int width, int height,const Position& position, const QString& imagePath);
 
-    void draw(QGraphicsScene &scene) const override;
+    void draw(QGraphicsScene &scene) override;
     Decorator(const Decorator& other);
 private:
     QString imagePath;
