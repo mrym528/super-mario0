@@ -1,6 +1,6 @@
 #include "platform.h"
 #include "bodyobject.h"
-#include "C:/Users/AlborzRayan/CLionProjects/super-mario1/Position.h"
+#include "Position.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QPixmap>
