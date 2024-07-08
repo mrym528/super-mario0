@@ -18,7 +18,7 @@ public:
     ~BodyObject();
     BodyObject(const BodyObject& other);
 
-    virtual void draw(QGraphicsScene& scene) const = 0;
+    virtual void draw(QGraphicsScene& scene) = 0;
 };
 
 #endif // BODYOBJECT_H
