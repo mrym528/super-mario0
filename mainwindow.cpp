@@ -48,7 +48,7 @@ void MainWindow::setupScene()
 void MainWindow::drawObjects()
 {
     // Draw platforms
-    for (const auto &platform : platforms)
+    for ( auto &platform : platforms)
     {
         platform.draw(*scene);
     }
