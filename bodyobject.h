@@ -4,7 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QObject>
-#include "C:/Users/AlborzRayan/CLionProjects/super-mario1/Position.h"
+#include "Position.h"
 
 class BodyObject:public QObject {
     Q_OBJECT
