@@ -10,7 +10,7 @@ public:
     Platform(int width, int height, const Position& position, const QString& imagePath);
     //int getWidth();
     //int getHeight();
-    void draw(QGraphicsScene &scene) const override;
+    void draw(QGraphicsScene &scene) override;
     Platform(const Platform& other);
     //Position getPosition();
 private:
