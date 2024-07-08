@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/background">
+        <file>assets/background.png</file>
+    </qresource>
+    <qresource prefix="/hills">
+        <file>assets/hills.png</file>
+    </qresource>
+    <qresource prefix="/platform">
+        <file>assets/platform.png</file>
+    </qresource>
+    <qresource prefix="/platformSmallTall">
+        <file>assets/platformSmallTall.png</file>
+    </qresource>
+    <qresource prefix="/spriteRunLeft">
+        <file>assets/spriteRunLeft.png</file>
+    </qresource>
+    <qresource prefix="/spriteRunRight">
+        <file>assets/spriteRunRight.png</file>
+    </qresource>
+    <qresource prefix="/spriteStandLeft">
+        <file>assets/spriteStandLeft.png</file>
+    </qresource>
+    <qresource prefix="/spriteStandRight">
+        <file>assets/spriteStandRight.png</file>
+    </qresource>
+</RCC>
