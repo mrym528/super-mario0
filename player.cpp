@@ -29,7 +29,7 @@ Player::Player(int width, int height, Position position, QGraphicsPixmapItem *im
     //QObject::connect(movementTimer, &QTimer::timeout, this, &Player::updatePosition);
     //movementTimer->start(30);
 }
-void Player::draw(QGraphicsScene& scene)const{
+void Player::draw(QGraphicsScene& scene){
     QGraphicsRectItem* rect = new QGraphicsRectItem(position.x, position.y, width, height);
 
     // Set the color to red
