@@ -6,10 +6,11 @@
 #include <vector>
 #include <QObject>
 #include <QGraphicsScene>
-#include "C:/Users/AlborzRayan/CLionProjects/super-mario1/Position.h"
+#include "Position.h"
 #include "player.h"
 #include "decorator.h"
 class Game : public QObject{
+Q_OBJECT
 public:
     QGraphicsView &view;
     QGraphicsScene &scene;
