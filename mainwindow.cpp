@@ -8,6 +8,15 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), scene(new QGraphicsScene(this)), view(new QGraphicsView(scene)), player(nullptr), game(nullptr)
 {
+    game = new Game(*view, *scene, platforms, decorators, *player, 1000);
+
+    // Connect signals and slots
+    //connect(game, &Game::gameover, this, &MainWindow::handleGameOver);
+    //connect(game, &Game::victory, this, &MainWindow::handleVictory);
+
+    // Call showFullScreen() after the game is initialized
+    QTimer::singleShot(0, this, &MainWindow::showFullScreen);
+    showFullScreen();
     setupScene();
     setupGame();
 }
@@ -70,8 +79,8 @@ void MainWindow::setupGame()
     game = new Game(*view, *scene, platforms, decorators, *player, 1000); // Adjust as necessary
 
     //connect signals and slots
-    connect(game, &Game:: gameover, this, &MainWindow::handleGameOver);
-    connect(game, &Game::victory, this, &MainWindow::handleVictory);
+    //connect(game, &Game:: gameover, this, &MainWindow::handleGameOver);
+    //connect(game, &Game::victory, this, &MainWindow::handleVictory);
 
     // Start drawing objects
     drawObjects();
@@ -91,12 +100,9 @@ void MainWindow::handleVictory()
      //Optionally, reset the game state or perform other actions upon victory
 }
 
-Game game ( view, scene, platforms, decorators, player, distance ) ;
-
 // Connect the signal `victory` to a lambda that handles the victory action
-void MainWindow::setupConnections() {
-    QObject::connect(&game, &Game::victory, []() {
-        QMessageBox::information(nullptr, "Victory", "Congratulations! You won the game!");
-    });
-}
-
+//void MainWindow::setupConnections() {
+//    QObject::connect(game, &Game::victory, []() {
+//        QMessageBox::information(nullptr, "Victory", "Congratulations! You won the game!");
+//    });
+//}
