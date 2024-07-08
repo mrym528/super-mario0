@@ -34,7 +34,7 @@ private slots:
     void handleGameOver();
     void handleVictory();
 
-    void setupConnections();
+    //void setupConnections();
 };
 
 #endif // MAINWINDOW_H
