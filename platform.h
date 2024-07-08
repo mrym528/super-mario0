@@ -1,6 +1,6 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
-#include "C:/Users/AlborzRayan/CLionProjects/super-mario1/Position.h"
+#include "Position.h"
 #include "bodyobject.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
