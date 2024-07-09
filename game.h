@@ -6,11 +6,11 @@
 #include <vector>
 #include <QObject>
 #include <QGraphicsScene>
-#include "Position.h"
+#include "platform.h"
 #include "player.h"
 #include "decorator.h"
 class Game : public QObject{
-Q_OBJECT
+     Q_OBJECT
 public:
     QGraphicsView &view;
     QGraphicsScene &scene;
@@ -23,8 +23,8 @@ public:
     void handleGameOver();
     void handleVictory();
 signals:
+    void gameOver();
     void victory();
-    void gameover();
 
 };
 

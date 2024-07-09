@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QVBoxLayout>
 #include <vector>
+#include <QTimer>
 #include "platform.h"
 #include "decorator.h"
 #include "player.h"
@@ -17,7 +18,8 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 private:
     QGraphicsScene *scene;
     QGraphicsView *view;
@@ -25,7 +27,6 @@ private:
     std::vector<Decorator> decorators;
     Player *player;
     Game *game;
-
     void setupScene();
     void drawObjects();
     void setupGame();
@@ -33,9 +34,6 @@ private:
 private slots:
     void handleGameOver();
     void handleVictory();
-
-    //void setupConnections();
 };
 
 #endif // MAINWINDOW_H
-

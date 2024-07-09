@@ -2,46 +2,46 @@
 #define PLAYER_H
 
 #include "bodyobject.h"
-#include "Position.h"
+#include "position.h"
 #include "platform.h"
 #include "decorator.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QGraphicsRectItem>
 #include <QKeyEvent>
 #include <QTimer>
 #include <vector>
-#include <QObject>   // Ensure QObject is included
+#include <QObject>
 
-class Player : public BodyObject{
+class Player : public BodyObject, public QGraphicsRectItem{
     Q_OBJECT
 
 public:
-    enum State { StandLeft, StandRight, RunLeft, RunRight, JumpingLeft, JumpingRight };
-
-    Player(int width, int height, Position position, QGraphicsPixmapItem *image = nullptr, int speed = 5);
+    Player(int width, int height, Position position, int speed);
+    ~Player();
 
     void draw(QGraphicsScene& scene) const;
-    void setState(State state);
-    void handleGravity(std::vector<Platform>& platforms );
-    void updatePosition(std::vector<Platform>& platforms);
-    void handleMovement();
-    void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
-    void updateImage();
-    bool isCollidingWithPlatform(std::vector<Platform>& platforms);
+    void moveLeft();
+    void moveRight();
+    void jump();
+    bool checkCollisions();
+    void landing();
+
+protected:
+    void keyPressEvent(QKeyEvent* event) override;
+
+public slots:
+    void applyGravity();
+
 private:
     int speed;
-    Position velocity;
-    State currentState;
-    QTimer *movementTimer;
-    std::vector<Platform> platforms;
-    QPixmap standLeftImage;
-    QPixmap standRightImage;
-    QPixmap runLeftImage;
-    QPixmap runRightImage;
-    QPixmap jumpLeftImage;
-    QPixmap jumpRightImage;
+    bool jumping;
+    int jumpVelocity;
+    int gravity;
+    int velocityY;
+    QTimer* gravityTimer;
 
+signals:
+    void gameOver();
 };
-
 #endif // PLAYER_H

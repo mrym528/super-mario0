@@ -9,17 +9,17 @@
 Game::Game(QGraphicsView &view, QGraphicsScene &scene, std::vector<Platform> platform, std::vector<Decorator> decorator, Player &player, int amountDistance)
     : view(view), scene(scene), platforms(std::move(platform)), decorators(std::move(decorator)), player(player), amountDistance(amountDistance) {}
 void Game::handleGameOver(){
-    bool onPlatform = player.isCollidingWithPlatform(platforms);
+   /* bool onPlatform = player.isCollidingWithPlatform(platforms);
 
     if (!onPlatform) {
         std::cout << "Game Over: Player fell off the platform!" << std::endl;
         QMessageBox::information(nullptr, "Game Over", "Game Over: Player fell off the platform!");
-        // Optionally, reset the game state or perform other actions upon game over
-    }
+        emit gameOver();
+    }*/
 }
 void Game::handleVictory(){
-    if (amountDistance == 700) { // Change 1000 to the specific distance you want to check for
+    if (amountDistance == 1500) {
         std::cout << "Congratulations! You won the game!" << std::endl;
-        emit victory(); // Emit the victory signal
+        emit victory();
     }
 }

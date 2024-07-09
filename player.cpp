@@ -1,136 +1,55 @@
 #include "player.h"
 #include <QKeyEvent>
-#include "Position.h"
-#include "platform.h"
-#include "bodyobject.h"
-#include <vector>
-#include <QObject>   // Ensure QObject is included
-#include <QTimer>    // For QTimer
-#include <QGraphicsPixmapItem>  // If QGraphicsPixmapItem is used
-#include <QString>
+#include <QGraphicsScene>
+#include <QMessageBox>
 #include <iostream>
-#include <QBrush>
-#include <QGraphicsRectItem>
-Player::Player(int width, int height, Position position, QGraphicsPixmapItem *image, int speed)
-    : BodyObject(width, height, position, image), speed(speed), currentState(StandRight) {
 
-    // Load images
-    standLeftImage = QPixmap(":/spriteStandLeft/assets/spriteStandLeft.png");
-    standRightImage = QPixmap(":/spriteStandRight/assets/spriteStandRight.png");
-    runLeftImage = QPixmap(":/spriteRunLeft/assets/spriteRunLeft.png");
-    runRightImage = QPixmap(":/spriteRunRight/assets/spriteRunRight.png");
-    jumpLeftImage = QPixmap(":/spriteStandLeft/assets/spriteStandLeft.png");
-    jumpRightImage = QPixmap(":/spriteStandRight/assets/spriteStandRight.png");
+// constructor
+Player::Player(int width, int height, Position position, int speed)
+    : BodyObject(width, height, position),
+    QGraphicsRectItem(position.x, position.y, width, height), speed(speed)
+{
+    setFlag(QGraphicsItem::ItemIsFocusable);
+    setFocus();
 
-    // Set initial image
-    //this->image->setPixmap(standRightImage);
+    // Timer for gravity and jumping
+    gravityTimer = new QTimer(this);
+    connect(gravityTimer, &QTimer::timeout, this, &Player::applyGravity);
+    gravityTimer->start(30);
+    jumping = false;
+    jumpVelocity = -15;
+    gravity = 1;
+    velocityY = 0;
 
-    //connect(movementTimer, &QTimer::timeout, this, &Player::updatePosition);
-    //QObject::connect(movementTimer, &QTimer::timeout, this, &Player::updatePosition);
-    //movementTimer->start(30);
+    qDebug() << "Player initialized at position:" << position.x << position.y;
 }
-void Player::draw(QGraphicsScene& scene){
+// destructor
+Player::~Player()
+{
+    delete gravityTimer;
+}
+// draw player  on screen
+void Player::draw(QGraphicsScene& scene) const
+{
     QGraphicsRectItem* rect = new QGraphicsRectItem(position.x, position.y, width, height);
-
-    // Set the color to red
     QBrush brush(Qt::red);
     rect->setBrush(brush);
-
-    // Add the rectangle to the scene
     scene.addItem(rect);
 }
-void Player::setState(State state) {
-    //if (currentState != state) {
-        //currentState = state;
-        //updateImage();
-    //}
-    currentState = state;
-}
-
-void Player::updateImage() {
-    //switch (currentState) {
-    //case StandLeft:
-        //image->setPixmap(standLeftImage);
-        //break;
-    //case StandRight:
-        //image->setPixmap(standRightImage);
-        //break;
-    //case RunLeft:
-        /*image->setPixmap(runLeftImage);
-        break;
-    case RunRight:
-        image->setPixmap(runRightImage);
-        break;
-    case JumpingLeft:
-        image->setPixmap(jumpLeftImage);
-        break;
-    case JumpingRight:
-        image->setPixmap(jumpRightImage);
-        break;
-    }*/
-
-}
-
-void Player::handleGravity(std::vector<Platform>& platforms) {
-    bool onPlatform = false;
-
-    for (const auto& platform : platforms) {
-        if (isCollidingWithPlatform(platforms)) {  // Pass entire platforms vector here
-            onPlatform = true;
-            position.y = platform.position.y - height;
-            velocity.y = 0;
-            break;
-        }
-    }
-
-    if (!onPlatform) {
-        velocity.y += 1; // Simple gravity increment
-        position.y += velocity.y;
-        if (position.y > 350) { // Ground level
-            position.y = 350;
-            velocity.y = 0;
-        }
-    }
-}
-
-void Player::handleMovement() {
-    if (currentState == RunLeft || currentState == JumpingLeft) {
-        position.x = position.x - speed;
-    } else if (currentState == RunRight || currentState == JumpingRight) {
-        position.x = position.x + speed;
-    }
-    image->setPos(position.x, position.y);
-}
-
-void Player::updatePosition(std::vector<Platform>& platforms) {
-    handleMovement();
-    handleGravity(platforms);
-}
-
-void Player::keyPressEvent(QKeyEvent *event) {
-    switch (event->key()) {
+// handling pressing keys
+void Player::keyPressEvent(QKeyEvent* event)
+{
+    switch (event->key())
+    {
     case Qt::Key_Left:
-        if (currentState == StandLeft || currentState == RunRight || currentState == StandRight || velocity.y == 0) {
-            setState(RunLeft);
-        } else if (currentState == JumpingRight || currentState == JumpingLeft) {
-            setState(JumpingLeft);
-        }
+        moveLeft();
         break;
     case Qt::Key_Right:
-        if (currentState == StandRight || currentState == RunLeft || currentState == StandLeft || velocity.y == 0) {
-            setState(RunRight);
-        } else if (currentState == JumpingRight || currentState == JumpingLeft) {
-            setState(JumpingRight);
-        }
+        moveRight();
         break;
     case Qt::Key_Space:
-        if (velocity.y == 0) {
-            velocity.y = -15; // Jumping velocity
-            if (currentState == RunLeft || currentState == StandLeft) {
-                setState(JumpingLeft);
-            } else if (currentState == RunRight || currentState == StandRight) {
-                setState(JumpingRight);
-            }
+        if (!jumping) {
+            jump();
         }
         break;
     default:
@@ -138,27 +57,84 @@ void Player::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void Player::keyReleaseEvent(QKeyEvent *event) {
-    switch (event->key()) {
-    case Qt::Key_Left:
-        if (currentState == RunLeft) setState(StandLeft);
-        break;
-    case Qt::Key_Right:
-        if (currentState == RunRight) setState(StandRight);
-        break;
-    default:
-        break;
+void Player::moveLeft()
+{
+    position.x -= speed;
+    setPos(position.x, position.y);
+    qDebug() << "Player moved left to:" << position.x << position.y;
+    update();
+}
+
+void Player::moveRight()
+{
+    position.x += speed;
+    setPos(position.x, position.y);
+    qDebug() << "Player moved right to:" << position.x << position.y;
+    update();
+}
+
+void Player::jump()
+{
+    if (!jumping) {
+        jumping = true;
+        velocityY = jumpVelocity;
+        qDebug() << "Player jumped with initial velocity:" << jumpVelocity;
     }
 }
 
-bool Player::isCollidingWithPlatform(std::vector<Platform>& platforms) {
-    for (auto& p : platforms) {
-        QRectF platformRect(p.position.x, p.position.y, p.width, p.height);
-        QRectF playerRect(position.x, position.y, width, height);
+void Player::applyGravity()
+{
+    if (jumping)
+    {
+        velocityY += gravity;
+        position.y += velocityY;
+        setPos(position.x, position.y);
+        qDebug() << "Applying gravity. VelocityY:" << velocityY << "PositionY:" << position.y;
+        if (checkCollisions()) {
+            landing();
+        } else if (position.y > scene()->height()) {
+            emit gameOver();
+        }
+        update();
+    }
+}
 
-        if (playerRect.intersects(platformRect)) {
-            return true;
+bool Player::checkCollisions()
+{
+    if (scene() == nullptr) {
+        qDebug() << "Scene is null!";
+        return false;
+    }
+
+    QList<QGraphicsItem*> items = collidingItems();
+    for (QGraphicsItem* item : items)
+    {
+        Platform* platform = dynamic_cast<Platform*>(item);
+        if (platform)
+        {
+            qDebug() << "Collision detected with platform at position:" << platform->position.x << platform->position.y;
+            if (position.y + height <= platform->position.y + platform->height) {
+                return true;
+            }
         }
     }
     return false;
+}
+
+void Player::landing()
+{
+    jumping = false;
+    velocityY = 0;
+    QList<QGraphicsItem*> items = collidingItems();
+    for (QGraphicsItem* item : items)
+    {
+        Platform* platform = dynamic_cast<Platform*>(item);
+        if (platform)
+        {
+            position.y = platform->position.y - height;
+            setPos(position.x, position.y);
+            qDebug() << "Player landed on platform at position:" << position.x << position.y;
+        }
+    }
+    scene()->update();
 }
